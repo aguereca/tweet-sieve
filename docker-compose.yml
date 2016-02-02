@@ -1,0 +1,26 @@
+single-kafka:
+  image: tcnksm/single-kafka
+  ports:
+    - "9092:9092"
+    - "2181:2181"
+  environment:
+    ADVERTISED_HOST: 192.168.99.100
+    ADVERTISED_PORT: 9092
+elasticsearch:
+  image: itzg/elasticsearch
+  ports:
+    - "9200:9200"
+    - "9300:9300"
+  environment:
+    PLUGINS: mobz/elasticsearch-head
+    NODE_NAME: tweet-indexer
+web:
+  build: .
+  command: bundle exec rails s -p 3000 -b '0.0.0.0'
+  volumes:
+    - .:/tweet-sieve
+  ports:
+    - "3000:3000"
+  links:
+    - single-kafka
+    - elasticsearch

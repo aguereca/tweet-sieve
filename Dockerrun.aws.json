@@ -1,0 +1,38 @@
+{
+  "AWSEBDockerrunVersion": 2,
+  "volumes": [
+    {
+      "name": "tweet-sieve",
+      "host": {
+        "sourcePath": "/var/app/current/tweet-sieve"
+      }
+    }
+  ],
+  "containerDefinitions": [
+    {
+      "name": "tweet-sieve",
+      "image": "aguereca/tweet-sieve",
+      "environment": [
+        {
+          "name": "SINGLE_KAFKA_ENV_ADVERTISED_HOST",
+          "value": "192.168.99.100"
+        }
+      ],
+      "essential": true,
+      "memory": 128,
+      "portMappings": [
+        {
+          "hostPort": 80,
+          "containerPort": 3000
+        }
+      ],
+      "mountPoints": [
+        {
+          "sourceVolume": "tweet-sieve",
+          "containerPath": "/tweet-sieve",
+          "readOnly": false
+        }
+      ]
+    }
+  ]
+}
