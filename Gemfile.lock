@@ -1,3 +1,9 @@
+GIT
+  remote: git://github.com/bpot/poseidon.git
+  revision: dd74d9473692080cf49d3740eb3d7d929e79e1c9
+  specs:
+    poseidon (0.0.5)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -151,6 +157,7 @@ DEPENDENCIES
   coffee-rails (~> 4.1.0)
   jbuilder (~> 2.0)
   jquery-rails
+  poseidon!
   rails (= 4.2.0)
   sass-rails (~> 5.0)
   sdoc (~> 0.4.0)

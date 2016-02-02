@@ -16,3 +16,15 @@
 !/log/.keep
 /tmp
 
+# Elastic Beanstalk Files
+.elasticbeanstalk/*
+!.elasticbeanstalk/*.cfg.yml
+!.elasticbeanstalk/*.global.yml
+
+# Docker misc
+*.swp
+Docker/*.tar
+.DS_Store
+
+# Ignore file with sensive env vars
+/config/app_environment_variables.rb
