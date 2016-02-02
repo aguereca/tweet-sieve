@@ -24,6 +24,10 @@ module TweetSieve
     config.active_record.raise_in_transactional_callbacks = true
 
 
+    # Load the app's custom environment variables here, so that they are loaded before environments/*.rb
+    app_environment_variables = File.join(Rails.root, 'config', 'app_environment_variables.rb')
+    load(app_environment_variables) if File.exists?(app_environment_variables)
+
     # Tweet-sieve vars (defined in file 'config/app_environment_variables.rb')
     config.twitter_api_key =       ENV['TWITTER_API_KEY']
     config.twitter_api_secret =    ENV['TWITTER_API_SECRET']

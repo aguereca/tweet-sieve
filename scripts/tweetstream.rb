@@ -1,5 +1,5 @@
 #
-# Twitter streaming api client.
+# Twitter streaming api client. (Daemon)
 #
 # Run as service: ruby scripts/tweetstream.rb (start|stop|run)
 #
@@ -11,8 +11,6 @@ require 'tweetstream'
 ENV["RAILS_ENV"] ||= "development"
 
 root = File.expand_path(File.join(File.dirname(__FILE__), '..'))
-# Load env variables, without loading application
-require File.join(root, "config", "app_environment_variables")
 require File.join(root, "config", "environment")
 app_config = Rails.application.config
 
