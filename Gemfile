@@ -39,6 +39,9 @@ gem 'tweetstream'
 # Kafka client
 gem 'poseidon', :git => 'git://github.com/bpot/poseidon.git'
 
+# Elasticsearch
+gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
+
 
 group :development, :test do
   # Call 'byebug' anywhere in the code to stop execution and get a debugger console

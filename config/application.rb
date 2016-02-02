@@ -33,10 +33,15 @@ module TweetSieve
     config.twitter_api_secret =    ENV['TWITTER_API_SECRET']
     config.twitter_access_token =  ENV['TWITTER_ACCESS_TOKEN']
     config.twitter_access_secret = ENV['TWITTER_ACCESS_SECRET']
-    config.kafka_server =          ENV['KAFKA_SERVER']
+
+    config.kafka_host =            ENV['KAFKA_HOST']
+    config.kafka_port =            ENV['KAFKA_PORT']
     config.kafka_topic =           ENV['KAFKA_TOPIC']
 
+    config.elasticsearch_server =  ENV['ELASTICSEARCH_SERVER']
 
+
+    # App defaults not dependent on ENV vars
     config.kafka_client_id = 'tweet-sieve-app'
     config.kafka_sync_each = 100
     config.tweetstreaming_area = [-180,-90,180,90] # All world

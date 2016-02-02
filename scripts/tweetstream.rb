@@ -47,9 +47,8 @@ daemon.on_enhance_your_calm do
   daemonlogger.warn "Enhance your calm!:"
 end
 
-producer = Poseidon::Producer.new([app_config.kafka_server],
-                                  app_config.kafka_client_id,
-                                  :type => :sync)
+kafka_server = "#{app_config.kafka_host}:#{app_config.kafka_port}"
+producer = Poseidon::Producer.new([kafka_server], app_config.kafka_client_id)
 
 messages = []
 daemon.locations(*app_config.tweetstreaming_area) do |tweet|
