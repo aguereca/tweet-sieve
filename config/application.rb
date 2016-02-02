@@ -22,5 +22,19 @@ module TweetSieve
 
     # Do not swallow errors in after_commit/after_rollback callbacks.
     config.active_record.raise_in_transactional_callbacks = true
+
+
+    # Tweet-sieve vars (defined in file 'config/app_environment_variables.rb')
+    config.twitter_api_key =       ENV['TWITTER_API_KEY']
+    config.twitter_api_secret =    ENV['TWITTER_API_SECRET']
+    config.twitter_access_token =  ENV['TWITTER_ACCESS_TOKEN']
+    config.twitter_access_secret = ENV['TWITTER_ACCESS_SECRET']
+    config.kafka_server =          ENV['KAFKA_SERVER']
+    config.kafka_topic =           ENV['KAFKA_TOPIC']
+
+
+    config.kafka_client_id = 'tweet-sieve-app'
+    config.kafka_sync_each = 100
+    config.tweetstreaming_area = [-180,-90,180,90] # All world
   end
 end
