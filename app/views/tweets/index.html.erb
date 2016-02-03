@@ -4,38 +4,58 @@
 
 <p id="notice"><%= notice %></p>
 
-<h1>Top Tweets</h1>
-
-<table>
-  <thead>
-    <tr>
-        <th>User</th>
-        <th>Text</th>
-    </tr>
-  </thead>
-
-  <tbody>
-    <% @tweets.each do |tweet| %>
-      <tr>
-        <td><%= tweet.user['name'] %></td>
-        <td><%= tweet.text %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
-
-<br>
+<h1>Top recent Tweets</h1>
 
 <%# <%= link_to 'New Tweet', new_tweet_path %>
 
 <div style='width: 800px;'>
-  <div id="map" style='width: 800px; height: 400px;'></div>
+  <div id="sidebar_builder" style='width: 800px; height: 400px;'></div>
+</div>
+<div>
+<br>
+<table>
+  <tbody id='sidebar_container'>
+  </tbody>
+</table>
 </div>
 
 <script type="text/javascript">
+ function createSidebarTr(json){
+     return ("<tr><a>" +
+             "<td><img src='" + json.pic + "' " +
+             "alt='@" + json.screen_name + "'></td>" +
+             "<td>" + json.user_name + "</td>" +
+             "<td>" + json.text + "</td>" +
+             "</a></tr>");
+ };
+
+ function bindTrToMarker($tr, marker){
+  $tr.on('click', function(){
+    handler.getMap().setZoom(14);
+    marker.setMap(handler.getMap()); //because clusterer removes map property from marker
+      marker.panTo();
+      jQuery('html,body').animate({scrollTop: jQuery('#sidebar_builder').offset().top}, 700);
+    google.maps.event.trigger(marker.getServiceObject(), 'click');
+  })
+};
+
+function createSidebar(json_array){
+  _.each(json_array, function(json){
+    var $tr = $( createSidebarTr(json) );
+    $tr.appendTo('#sidebar_container');
+    bindTrToMarker($tr, json.marker);
+  });
+};
+
  handler = Gmaps.build('Google');
- handler.buildMap({ provider: {}, internal: {id: 'map'}}, function(){
-  markers = handler.addMarkers(<%=raw @hash.to_json %>);
+ handler.buildMap({ provider: {}, internal: {id: 'sidebar_builder'}}, function(){
+  var json_array = <%=raw @hash.to_json %>
+  var markers = handler.addMarkers(json_array);
+  _.each(json_array, function(json, index){
+    json.marker = markers[index];
+  });
+
+  createSidebar(json_array);
   handler.bounds.extendWith(markers);
   handler.fitMapToBounds();
 });

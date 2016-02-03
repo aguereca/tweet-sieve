@@ -7,16 +7,19 @@ class TweetsController < ApplicationController
     @tweets = Tweet.all sort: {'created_at': {'order': 'desc'}},
                         _source: ['user.screen_name', 'user.name',
                                   'user.profile_image_url', 'text', 'geo'],
-                        size: 10
+                        size: 250
     @hash = Gmaps4rails.build_markers(@tweets) do |tweet, marker|
       marker.lat tweet.geo['coordinates'][0]
       marker.lng tweet.geo['coordinates'][1]
-      marker.infowindow ["@#{tweet.user['screen_name']}", tweet.text].join(': ')
+      marker.infowindow ["<b>@#{tweet.user['screen_name']}</b>", tweet.text].join(': ')
       marker.picture({
                        "url" => tweet.user['profile_image_url'],
                        "width" =>  32,
                        "height" => 32})
-      marker.json({id: tweet.id, title: tweet.user['screen_name'] })
+      marker.json({id: tweet.id, screen_name: tweet.user['screen_name'],
+                   text: tweet.text, coordinates: tweet.geo['coordinates'],
+                   user_name: tweet.user['name'],
+                   pic: tweet.user['profile_image_url']})
     end
   end
 
