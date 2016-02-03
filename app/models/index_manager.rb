@@ -1,7 +1,5 @@
-app_config = Rails.application.config
-
 class IndexManager
-
+  app_config = Rails.application.config
   Elasticsearch::Client.new log: true, host: app_config.elasticsearch_server
 
   def self.create_index(options={})

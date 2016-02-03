@@ -4,7 +4,8 @@ class Tweet
   index_name [Rails.application.engine_name, Rails.env].join('-')
 
 
-  attribute :id, String, presence: true, mapping: { index: 'not_analyzed' }
+  attribute :id, String, presence: true, mapping: { type: 'string',
+                                                    index: 'not_analyzed' }
 
   analyzed_and_raw = { fields: {
                          analyzed: { type: 'string', analyzer: 'standard' },
@@ -24,9 +25,13 @@ class Tweet
 
   attribute :user, Hash, mapping: { type: 'object',
                                     properties: {
-                                      id: {index: 'not_analyzed'},
-                                      name: {mapping: analyzed_and_raw},
-                                      deafault_profile_image: {index: 'not_analyzed'}
+                                      id: {type: 'string',
+                                           index: 'not_analyzed'},
+                                      name: {type: 'string',
+                                             mapping: analyzed_and_raw},
+                                      default_profile_image: {index: 'not_analyzed',
+                                                              type: 'string'}
+                                    }
                                   }
 
   #
@@ -34,6 +39,5 @@ class Tweet
   #
 
   # Format reference: http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
-  attribute :created_at, Date, mapping: { type: 'date',
-                                          format: 'EEE MMM dd kk:mm:ss ZZ yyyy'}
+  attribute :created_at, Date, mapping: { type: 'date'}
 end

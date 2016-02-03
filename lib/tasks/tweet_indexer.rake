@@ -13,19 +13,23 @@ namespace :tweetsieve do
 
     loop do
       messages = consumer.fetch
-      messages.each do |tweet|
-        p consumer.highwater_mark
-        Tweet.create id: tweet['id'],
-                     text: tweet['text'],
-                     geo: {
-                       coordinates: tweet['geo']['coordinates']
-                     },
-                     user: {
-                       id: tweet['user']['id'],
-                       name: tweet['user']['name'],
-                       default_profile_image: tweet['user']['default_profile_image']
-                     },
-                     created_at: tweet['created_at']
+      messages.each do |message|
+        #p consumer.highwater_mark
+        tweet = JSON.parse message.value
+        # NOTE: For now only index tweets with geo.coordinates
+        unless tweet['geo'].nil?
+          Tweet.create id: tweet['id'],
+                       text: tweet['text'],
+                       geo: {
+                         coordinates: tweet['geo']['coordinates']
+                       },
+                       user: {
+                         id: tweet['user']['id'],
+                         name: tweet['user']['name'],
+                         default_profile_image: tweet['user']['default_profile_image']
+                       },
+                       created_at: Time.parse(tweet['created_at'])
+        end
       end
     end
   end

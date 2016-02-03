@@ -53,7 +53,7 @@ producer = Poseidon::Producer.new([kafka_server], app_config.kafka_client_id)
 messages = []
 daemon.locations(*app_config.tweetstreaming_area) do |tweet|
   messages << Poseidon::MessageToSend.new(app_config.kafka_topic,
-                                          tweet.to_hash.to_s)
+                                          JSON.dump(tweet.to_hash))
   # NOTE: Since :async isn't yet implemented on Poseidon, we'll sync each
   #       'sync_each' messages, might be implemented also with a timeout
   #       to ensure each 'sync_timeout' seconds max
