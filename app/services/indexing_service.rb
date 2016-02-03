@@ -22,14 +22,11 @@ class IndexingService
         unless tweet['geo'].nil?
           indexable_tweet = self.indexable_tweet tweet
           new_index_name = [@app_config.kafka_topic,
-                            self.index_sufix(indexable_tweet['created_at'],
+                            self.index_sufix(indexable_tweet[:created_at],
                                              by)].join("_")
           unless @index_names.include? new_index_name
-            # New index required ...
-            IndexManager.create_index(new_index_name)
-            self.sync_index_names
+            self.create_new_index(new_index_name)
           end
-          #Tweet.__elasticsearch__.create_index!
           tweet_doc = Tweet.new indexable_tweet
           # TODO: Fix this because changing the instance index_name
           #       doesn't index on updated index, only works updating the class,
@@ -40,6 +37,7 @@ class IndexingService
       end
     end
   end
+
 
   def indexable_tweet(raw_tweet)
     {
@@ -57,20 +55,49 @@ class IndexingService
     }
   end
 
+
+  def create_new_index(index_name)
+    IndexManager.create_index(index_name)
+    self.sync_index_names
+    # Prune indexes, only keep max expected
+    self.prune_indexes
+  end
+
+
+  def prune_indexes(keep: @app_config.max_keep_indexes)
+    if @index_names.length > keep
+      to_remove = @index_names.slice!(keep, @index_names.length)
+      to_remove.each do |index|
+        Tweet.gateway.client.indices.delete index: index
+      end
+    end
+  end
+
+
   protected
+
 
   def sync_index_names()
     # "Cache" of indexes on Cluster
-    @index_names = Tweet.gateway.client.cat.indices
+    @index_names = Tweet.gateway.client.cat.indices.split("\n").map do |raw|
+      raw.split(" ")[2]
+    end
+    @index_names.sort!
+    @index_names.reverse!
   end
+
 
   def index_sufix(date, by)
     format = nil
     case by
+    when :minute
+      # NOTE: Not used for now
+      format = "%y%m%d%H%M"
     when :hour
-      format = "%y%m%d%M"
+      format = "%y%m%d%H"
     when :day
-      format = "%y%m%d00"
+      # NOTE: Not used for now
+      format = "%y%m%d"
     end
     date.strftime(format)
   end
