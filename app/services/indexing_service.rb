@@ -48,8 +48,9 @@ class IndexingService
       },
       user: {
         id: raw_tweet['user']['id'],
+        screen_name: raw_tweet['user']['screen_name'],
         name: raw_tweet['user']['name'],
-        default_profile_image: raw_tweet['user']['default_profile_image']
+        profile_image_url: raw_tweet['user']['profile_image_url']
       },
       created_at: Time.parse(raw_tweet['created_at'])
     }

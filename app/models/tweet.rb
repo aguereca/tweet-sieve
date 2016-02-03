@@ -31,10 +31,12 @@ class Tweet
                                     properties: {
                                       id: {type: 'string',
                                            index: 'not_analyzed'},
+                                      screen_name: {type: 'string',
+                                                    index: 'not_analyzed'},
                                       name: {type: 'string',
-                                             mapping: analyzed_and_raw},
-                                      default_profile_image: {index: 'not_analyzed',
-                                                              type: 'string'}
+                                             index: 'not_analyzed'},
+                                      profile_image_url: {index: 'not_analyzed',
+                                                          type: 'string'}
                                     }
                                   }
 

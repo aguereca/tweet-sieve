@@ -4,7 +4,20 @@ class TweetsController < ApplicationController
   # GET /tweets
   # GET /tweets.json
   def index
-    @tweets = Tweet.all sort: 'created_at', _source: ['user.name', 'text'], size: 10
+    @tweets = Tweet.all sort: {'created_at': {'order': 'desc'}},
+                        _source: ['user.screen_name', 'user.name',
+                                  'user.profile_image_url', 'text', 'geo'],
+                        size: 10
+    @hash = Gmaps4rails.build_markers(@tweets) do |tweet, marker|
+      marker.lat tweet.geo['coordinates'][0]
+      marker.lng tweet.geo['coordinates'][1]
+      marker.infowindow ["@#{tweet.user['screen_name']}", tweet.text].join(': ')
+      marker.picture({
+                       "url" => tweet.user['profile_image_url'],
+                       "width" =>  32,
+                       "height" => 32})
+      marker.json({id: tweet.id, title: tweet.user['screen_name'] })
+    end
   end
 
   # GET /tweets/1
