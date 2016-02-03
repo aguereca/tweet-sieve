@@ -43,7 +43,7 @@ module TweetSieve
 
     # App defaults not dependent on ENV vars
     config.kafka_client_id = 'tweet-sieve-app'
-    config.kafka_sync_each = 100
+    config.kafka_sync_each = 50
     config.tweetstreaming_area = [-180,-90,180,90] # All world
     config.max_keep_indexes = 24 # 24 Hours
   end

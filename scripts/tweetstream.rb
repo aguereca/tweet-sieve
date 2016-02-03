@@ -52,12 +52,17 @@ producer = Poseidon::Producer.new([kafka_server], app_config.kafka_client_id)
 
 messages = []
 daemon.locations(*app_config.tweetstreaming_area) do |tweet|
-  messages << Poseidon::MessageToSend.new(app_config.kafka_topic,
-                                          JSON.dump(tweet.to_hash))
-  # NOTE: Since :async isn't yet implemented on Poseidon, we'll sync each
-  #       'sync_each' messages, might be implemented also with a timeout
-  #       to ensure each 'sync_timeout' seconds max
-  if messages.length >= app_config.kafka_sync_each
-    producer.send_messages(messages)
+  # NOTE: To reduce space used by Kafka we are not storing tweets
+  #       without geo.coordinates, once we add code to index
+  #       the geo-polygon of 'place', this limitation can be lifted
+  unless tweet.geo.coordinates.nil?
+    messages << Poseidon::MessageToSend.new(app_config.kafka_topic,
+                                            JSON.dump(tweet.to_hash))
+    # NOTE: Since :async isn't yet implemented on Poseidon, we'll sync each
+    #       'sync_each' messages, might be implemented also with a timeout
+    #       to ensure each 'sync_timeout' seconds max
+    if messages.length >= app_config.kafka_sync_each
+      producer.send_messages(messages)
+    end
   end
 end
