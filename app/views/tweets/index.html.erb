@@ -1,0 +1,25 @@
+<p id="notice"><%= notice %></p>
+
+<h1>Top Tweets</h1>
+
+<table>
+  <thead>
+    <tr>
+        <th>User</th>
+        <th>Text</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @tweets.each do |tweet| %>
+      <tr>
+        <td><%= tweet.user['name'] %></td>
+        <td><%= tweet.text %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%# <%= link_to 'New Tweet', new_tweet_path %>

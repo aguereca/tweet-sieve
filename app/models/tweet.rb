@@ -44,4 +44,18 @@ class Tweet
 
   # Format reference: http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
   attribute :created_at, Time, mapping: { type: 'date'}
+
+  def self.top_tweets
+    Tweet.search(
+      {
+        query: {
+          match_all: {
+          }
+        },
+        sort: 'created_at',
+        size: 10
+      }
+    )
+  end
+
 end
