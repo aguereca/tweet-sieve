@@ -40,11 +40,15 @@ class IndexingService
 
 
   def indexable_tweet(raw_tweet)
+    # NOTE: Coordinates are stored as object to prevent issues at indexing time
+    #       since arrays geo-points are interpreted different
+    # Reference: https://www.elastic.co/guide/en/elasticsearch/reference/current/geo-point.html
+    coord = raw_tweet['geo']['coordinates']
     {
       id: raw_tweet['id'],
       text: raw_tweet['text'],
       geo: {
-        coordinates: raw_tweet['geo']['coordinates']
+        coordinates: {lat: coord[0], lon: coord[1]}
       },
       user: {
         id: raw_tweet['user']['id'],

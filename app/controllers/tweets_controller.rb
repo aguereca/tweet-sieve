@@ -6,18 +6,30 @@ class TweetsController < ApplicationController
   # GET /tweets
   # GET /tweets.json
   def index
+    # TODO: Add parameter validation
+    #       Improve handling of defaults
+    size = (params[:size] || 250).to_i
     location = params[:location]
+    keywords = params[:keywords]
+    radius = (params[:radius] || 200).to_i
+
+    radius = 200 if radius == 0
+    location = nil if location && location.length == 0
     if location && location.length >0
-      p Geocoder.coordinates(params[:location])
+      location = Geocoder.coordinates(params[:location])
+    end
+    unless keywords.nil?
+      keywords = keywords.strip
+      keywords = nil if keywords.length == 0
     end
 
-    @tweets = Tweet.all sort: {'created_at': {'order': 'desc'}},
-                        _source: ['user.screen_name', 'user.name',
-                                  'user.profile_image_url', 'text', 'geo'],
-                        size: 250
-    @hash = Gmaps4rails.build_markers(@tweets) do |tweet, marker|
-      marker.lat tweet.geo['coordinates'][0]
-      marker.lng tweet.geo['coordinates'][1]
+    fields = ['user.screen_name', 'user.name',
+              'user.profile_image_url', 'text', 'geo']
+
+    tweets = Tweet.top_tweets(location, keywords, fields, size, radius)
+    @hash = Gmaps4rails.build_markers(tweets) do |tweet, marker|
+      marker.lat tweet.geo['coordinates']['lat']
+      marker.lng tweet.geo['coordinates']['lon']
       marker.infowindow ["<b>@#{tweet.user['screen_name']}</b>", tweet.text].join(': ')
       marker.picture({
                        "url" => tweet.user['profile_image_url'],

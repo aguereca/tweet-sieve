@@ -20,10 +20,10 @@ class Tweet
 
   attribute :geo, String, mapping: { type: 'object',
                                      properties: {
-                                       cordinates: { type: 'geo_point',
+                                       coordinates: { type: 'geo_point',
                                                      geohash: true,
                                                      geohash_prefix: true,
-                                                     geohash_precision: 10}
+                                                     geohash_precision: 6}
                                      }
                                    }
 
@@ -47,17 +47,42 @@ class Tweet
   # Format reference: http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
   attribute :created_at, Time, mapping: { type: 'date'}
 
-  def self.top_tweets
-    Tweet.search(
-      {
-        query: {
-          match_all: {
+
+  def self.top_tweets(location, keywords, fields, size, radius)
+    query = {
+      query: {match_all:{}},
+      _source: fields,
+      sort: {'created_at': {'order': 'desc'}},
+      size: size
+    }
+    unless location.nil?
+      query[:query] = {
+        filtered: {
+          filter: {
+            geohash_cell: {
+              "geo.coordinates": {
+                lat: location[0],
+                lon: location[1]
+              },
+              precision: "#{radius}miles",
+              neighbors: true
+            }
           }
-        },
-        sort: 'created_at',
-        size: 10
+        }
       }
-    )
+    end
+    unless keywords.nil?
+      sub_q = {
+        match: { text: keywords }
+      }
+      if query[:query].has_key? :filtered
+        query[:query][:filtered][:query] = sub_q
+      else
+        query[:query] = sub_q
+      end
+    end
+
+    Tweet.search(query)
   end
 
 end

@@ -12,9 +12,11 @@
             <tbody><tr>
                 <td>
                     <%= label_tag :location %>
-                    <%= text_field_tag :location, params[:location], class: "span2", placeholder: "ej. San Francisco" %>
-                </td>
-                <td>
+                    <%= text_field_tag :location, params[:location], class: "span2", placeholder: "ej. San Francisco, CA" %>
+                    <%= label_tag :radius, "Radius (miles)" %>
+                    <%= text_field_tag :radius, params[:radius], class: "span2", placeholder: "Default: 200 " %>
+                </td></tr>
+                <tr><td>
                     <%= label_tag :keywords %>
                     <%= text_field_tag :keywords, params[:keywords], class: "span2", placeholder: "ej. Ruby" %>
                     <button class="btn" type="submit">Search!</button>
