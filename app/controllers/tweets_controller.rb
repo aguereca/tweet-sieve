@@ -1,9 +1,16 @@
+#require Geocoder
+
 class TweetsController < ApplicationController
   before_action :set_tweet, only: [:show, :edit, :update, :destroy]
 
   # GET /tweets
   # GET /tweets.json
   def index
+    location = params[:location]
+    if location && location.length >0
+      p Geocoder.coordinates(params[:location])
+    end
+
     @tweets = Tweet.all sort: {'created_at': {'order': 'desc'}},
                         _source: ['user.screen_name', 'user.name',
                                   'user.profile_image_url', 'text', 'geo'],

@@ -6,6 +6,27 @@
 
 <h1>Top recent Tweets</h1>
 
+<%= form_tag(tweets_path, :method => "get", class: "navbar-form", id: "search-form") do %>
+    <div class="input-append">
+        <table>
+            <tbody><tr>
+                <td>
+                    <%= label_tag :location %>
+                    <%= text_field_tag :location, params[:location], class: "span2", placeholder: "ej. San Francisco" %>
+                </td>
+                <td>
+                    <%= label_tag :keywords %>
+                    <%= text_field_tag :keywords, params[:keywords], class: "span2", placeholder: "ej. Ruby" %>
+                    <button class="btn" type="submit">Search!</button>
+                </td>
+            </tr></tbody>
+        </table>
+    </div>
+<% end %>
+<%= yield %>
+
+<br>
+
 <%# <%= link_to 'New Tweet', new_tweet_path %>
 
 <div style='width: 800px;'>
