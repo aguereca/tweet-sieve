@@ -1,10 +1,7 @@
 class IndexManager
-  app_config = Rails.application.config
-  Elasticsearch::Client.new log: true, host: app_config.elasticsearch_server
-
-  def self.create_index(options={})
+  def self.create_index(index_name, options={})
     client     = Tweet.gateway.client
-    index_name = Tweet.index_name
+    #index_name = Tweet.index_name
 
     client.indices.delete index: index_name rescue nil if options[:force]
 

@@ -1,8 +1,12 @@
 class Tweet
   include Elasticsearch::Persistence::Model
+  include Elasticsearch::Model::Naming::InstanceMethods
 
-  index_name [Rails.application.engine_name, Rails.env].join('-')
+  app_config = Rails.application.config
+  Elasticsearch::Model.client = Elasticsearch::Client.new log: true,
+                                                          host: app_config.elasticsearch_server
 
+  index_name Rails.application.config.kafka_topic
 
   attribute :id, String, presence: true, mapping: { type: 'string',
                                                     index: 'not_analyzed' }
@@ -39,5 +43,5 @@ class Tweet
   #
 
   # Format reference: http://www.joda.org/joda-time/apidocs/org/joda/time/format/DateTimeFormat.html
-  attribute :created_at, Date, mapping: { type: 'date'}
+  attribute :created_at, Time, mapping: { type: 'date'}
 end

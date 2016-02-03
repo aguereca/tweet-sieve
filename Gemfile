@@ -40,6 +40,8 @@ gem 'tweetstream'
 gem 'poseidon', :git => 'git://github.com/bpot/poseidon.git'
 
 # Elasticsearch
+gem "elasticsearch-model"
+gem "elasticsearch-rails"
 gem "elasticsearch-persistence", require: 'elasticsearch/persistence/model'
 
 
