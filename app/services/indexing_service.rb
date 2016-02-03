@@ -58,6 +58,8 @@ class IndexingService
 
   def create_new_index(index_name)
     IndexManager.create_index(index_name)
+    Tweet.gateway.client.indices.put_alias index: index_name,
+                                           name: @app_config.kafka_topic
     self.sync_index_names
     # Prune indexes, only keep max expected
     self.prune_indexes
